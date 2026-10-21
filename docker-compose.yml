@@ -1,0 +1,22 @@
+services:
+  justwatch-seerr-sync:
+    build: .
+    container_name: justwatch-seerr-sync
+    restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"
+    environment:
+      JUSTWATCH_FIREBASE_API_KEY: ${JUSTWATCH_FIREBASE_API_KEY}
+      JUSTWATCH_CREDENTIALS: /run/secrets/justwatch-credentials.json
+      SEERR_URL: ${SEERR_URL:-http://seerr:5055}
+      SEERR_API_KEY: ${SEERR_API_KEY}
+      SEERR_DRY_RUN: ${SEERR_DRY_RUN:-true}
+      JUSTWATCH_LIST_ID: ${JUSTWATCH_LIST_ID:-}
+      SYNC_INTERVAL_SECONDS: ${SYNC_INTERVAL_SECONDS:-21600}
+    volumes:
+      - ./data:/data
+      - ${JUSTWATCH_CREDENTIALS_FILE}:/run/secrets/justwatch-credentials.json:ro
+    networks:
+      - cinecircle
+networks:
+  cinecircle:
+    external: true
